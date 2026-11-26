@@ -22,9 +22,6 @@ function Footer() {
           <p className="text-sm">Phone: 9327229447</p>
         </div>
       </div>
-      <p className="border-t border-gray-700 py-3 text-center text-xs">
-        © {new Date().getFullYear()} DriveEasy. All rights reserved.
-      </p>
     </footer>
   );
 }
