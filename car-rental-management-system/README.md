@@ -139,7 +139,7 @@ npm install
 npm run dev
 ```
 
-The API starts on `http://localhost:5000`. The backend still accepts the old `MONGO_URI` variable name for compatibility, but new configuration should use `MONGODB_URI`.
+The API starts on `http://localhost:5000`. The backend requires `MONGODB_URI` to contain a MongoDB Atlas SRV connection string (`mongodb+srv://`). Local `mongodb://` connections are not supported.
 
 ### Frontend
 

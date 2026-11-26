@@ -31,12 +31,12 @@ const createAdminFromEnvironment = async () => {
 };
 
 const connectDB = async () => {
-  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+  const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) {
     throw new Error("Set MONGODB_URI in backend/.env");
   }
-  if (!process.env.MONGODB_URI && process.env.MONGO_URI) {
-    console.warn("MONGO_URI is deprecated. Rename it to MONGODB_URI in backend/.env.");
+  if (!mongoUri.startsWith("mongodb+srv://")) {
+    throw new Error("MONGODB_URI must be a MongoDB Atlas SRV connection string (mongodb+srv://...).");
   }
 
   try {
