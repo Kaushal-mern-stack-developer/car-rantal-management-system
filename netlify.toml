@@ -1,0 +1,19 @@
+# The deployable site is the Vite + React frontend in a nested folder.
+# The Express/MongoDB backend in car-rental-management-system/backend is not
+# deployed by this build; point VITE_API_URL at wherever that API is hosted.
+[build]
+  base = "car-rental-management-system/frontend"
+  # Install dependencies (including devDependencies such as vite) before
+  # building, so the build works even when dependencies aren't preinstalled.
+  command = "npm ci --include=dev && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The app uses client-side routing (BrowserRouter), so send deep links such as
+# /cars/123 to index.html instead of returning a 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
