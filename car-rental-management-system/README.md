@@ -1,51 +1,171 @@
-# Car Rental Management System (MERN)
+# Car Rental Management System
 
-A simple car rental website. Customers can browse cars, search and filter, and book a car.
-Admins can add, edit and delete cars and manage all bookings.
+A full-stack car rental application. Customers can browse and filter cars, create an account, and submit bookings. Admins can manage cars and booking statuses.
 
-**Tech:** React (Vite) + Tailwind CSS, Node.js + Express, MongoDB (Mongoose), JWT login.
+## Technology
 
-## Folder overview
+- Frontend: React 18, React Router, Vite, Tailwind CSS
+- Backend: Node.js, Express 4, Mongoose 8
+- Database: MongoDB Atlas
+- Authentication: JSON Web Tokens (JWT)
 
-```
+## Project structure
+
+```text
 car-rental-management-system/
-├── frontend/
 ├── backend/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── bookingController.js
+│   │   └── carController.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── errorHandler.js
+│   ├── models/
+│   │   ├── Booking.js
+│   │   ├── Car.js
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── bookingRoutes.js
+│   │   └── carRoutes.js
+│   ├── utils/
+│   │   └── password.js
+│   ├── .env.example
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
+├── frontend/
+│   ├── public/
+│   │   └── images/cars/placeholder.svg
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── booking/
+│   │   │   │   └── BookingForm.jsx
+│   │   │   ├── cars/
+│   │   │   │   ├── CarCard.jsx
+│   │   │   │   ├── CarList.jsx
+│   │   │   │   └── SearchFilter.jsx
+│   │   │   ├── common/
+│   │   │   │   ├── Button.jsx
+│   │   │   │   └── Modal.jsx
+│   │   │   ├── home/
+│   │   │   │   ├── AboutSection.jsx
+│   │   │   │   ├── FeaturedCars.jsx
+│   │   │   │   └── HeroSection.jsx
+│   │   │   └── layout/
+│   │   │       ├── Footer.jsx
+│   │   │       └── Navbar.jsx
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── ThemeContext.jsx
+│   │   ├── pages/
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   ├── BookingPage.jsx
+│   │   │   ├── CarDetailsPage.jsx
+│   │   │   ├── CarsPage.jsx
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── LoginSignupPage.jsx
+│   │   │   └── MyBookingsPage.jsx
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   └── localStorage.js
+│   │   ├── utils/
+│   │   │   └── formValidation.js
+│   │   ├── assets/
+│   │   │   └── .gitkeep
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── .env.example
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   └── vite.config.js
 ├── .gitignore
 └── README.md
 ```
 
+The `package-lock.json` files in both applications should be committed to keep dependency installation reproducible. Dependency folders and generated build output should not be committed.
+
 ## Requirements
 
 - Node.js 18 or newer
+- npm
 - A MongoDB Atlas cluster
-- MongoDB Database Tools if you need to copy data from a local MongoDB database
 
-## Setup
+## Configure MongoDB Atlas
 
-### 1. Backend
+1. Create a MongoDB Atlas cluster and a database user.
+2. In Atlas Network Access, allow the IP address of the computer or server running the backend.
+3. Copy the cluster connection string and replace the placeholders with the database user's username, password, and cluster host.
+4. If the password contains reserved URL characters, URL-encode them in the connection string.
+5. Keep the connection string private. Do not put it in frontend variables or commit it to GitHub.
 
-```bash
-cd backend
+The backend creates the `cars`, `users`, and `bookings` collections when it connects. The database name used in the connection string is `car-rental` in the example below.
+
+## Run locally
+
+Open two terminals from the project root.
+
+### Backend
+
+```powershell
+Copy-Item backend/.env.example backend/.env
+```
+
+Edit `backend/.env` and set your actual values:
+
+```dotenv
+PORT=5000
+MONGODB_URI=mongodb+srv://<db-user>:<db-password>@<cluster-host>/car-rental?retryWrites=true&w=majority&appName=CarRental
+JWT_SECRET=replace_with_a_long_random_secret
+ADMIN_NAME=
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+```
+
+Replace the example URI and JWT secret. `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` are optional; set both admin email and password to create or update an admin account when the backend starts. Admin passwords must be at least six characters. Never commit the resulting `.env` file.
+
+Install and start the backend:
+
+```powershell
+Set-Location backend
 npm install
 npm run dev
 ```
 
-Create `backend/.env` using `backend/.env.example`, then add your Atlas connection string and a private JWT secret:
+The API starts on `http://localhost:5000`. The backend still accepts the old `MONGO_URI` variable name for compatibility, but new configuration should use `MONGODB_URI`.
 
+### Frontend
+
+In the second terminal, from the project root:
+
+```powershell
+Copy-Item frontend/.env.example frontend/.env
+Set-Location frontend
+npm install
+npm run dev
 ```
-PORT=5000
-MONGODB_URI=mongodb+srv://<db-user>:<db-password>@<cluster-host>/car-rental?retryWrites=true&w=majority&appName=CarRental
-JWT_SECRET=replace_with_a_long_random_secret
+
+The frontend runs at the address printed by Vite, normally `http://localhost:5173`. `VITE_API_URL` defaults to `http://localhost:5000/api`; change it in `frontend/.env` only if the backend API is at another address.
+
+To create a production frontend build:
+
+```powershell
+Set-Location frontend
+npm run build
 ```
 
-In Atlas, create a database user and allow your development/deployment IP address in Network Access. Replace the URI placeholders with the values from Atlas. If the password contains special characters, URL-encode them. Never commit `backend/.env` or share its contents.
+## Existing local MongoDB data
 
-If you already have `backend/.env`, replace its local database setting with `MONGODB_URI` and your Atlas connection string. The backend temporarily accepts the old `MONGO_URI` variable name so existing local setups continue to start; it prints a warning until you rename the variable.
+Changing the backend connection string does not copy data. If your records are in a local `car-rental` database and you want to keep them in Atlas, use MongoDB Database Tools to back them up and restore them before switching the backend to the Atlas URI.
 
-### Copy existing local data to Atlas
-
-Changing the connection string does not copy records. Before switching, back up your current `car-rental` database and restore it to Atlas. Run these commands in PowerShell with MongoDB Database Tools installed; set `ATLAS_MONGO_URI` to the same URI you use in `backend/.env`:
+Run from the project root in PowerShell, with MongoDB Database Tools installed. Replace the Atlas URI with your real connection string. Do not commit the archive or share the connection string.
 
 ```powershell
 $env:LOCAL_MONGO_URI = "mongodb://127.0.0.1:27017/car-rental"
@@ -54,52 +174,58 @@ mongodump --uri="$env:LOCAL_MONGO_URI" --archive=car-rental.archive --gzip
 mongorestore --uri="$env:ATLAS_MONGO_URI" --archive=car-rental.archive --gzip
 ```
 
-Confirm the `cars`, `users`, and `bookings` records are present in Atlas before starting the application with the Atlas URI. Keep the backup until you have verified the imported records, then remove `car-rental.archive`.
+Verify the collections and records in Atlas before using the Atlas URI in `backend/.env`. Keep the backup until verification is complete, then delete it.
 
-### 2. Frontend
+## Application features
 
-Open a second terminal:
+- Browse, search, and filter cars by category, fuel type, and maximum daily price
+- View car details and availability
+- Register and log in
+- Submit bookings with date validation and price calculation
+- View personal bookings
+- Admin dashboard to add, edit, and delete cars and update booking statuses
+- Light and dark themes
 
-```bash
-cd frontend
-npm install
-npm run dev
+## API
+
+All API paths are relative to `http://localhost:5000`.
+
+| Method | Path | Access |
+| --- | --- | --- |
+| `GET` | `/` | Public health message |
+| `POST` | `/api/auth/register` | Public |
+| `POST` | `/api/auth/login` | Public |
+| `GET` | `/api/cars` | Public; optional `search`, `category`, `fuelType`, and `maxPrice` query parameters |
+| `GET` | `/api/cars/:id` | Public |
+| `POST` | `/api/cars` | Admin |
+| `PUT` | `/api/cars/:id` | Admin |
+| `DELETE` | `/api/cars/:id` | Admin |
+| `POST` | `/api/bookings` | Authenticated user |
+| `GET` | `/api/bookings/my` | Authenticated user |
+| `GET` | `/api/bookings` | Admin |
+| `PUT` | `/api/bookings/:id/status` | Admin |
+
+Protected endpoints require the JWT returned by login or registration in the `Authorization: Bearer <token>` header.
+
+## Prepare and push to GitHub
+
+Review `.gitignore` and confirm `backend/.env`, `frontend/.env`, `node_modules`, build output, and database backups are not included. Keep both package lock files.
+
+From the project root:
+
+```powershell
+git init
+git add .
+git status --short
 ```
 
-If your backend runs on a different address, create `frontend/.env` with:
-`VITE_API_URL=http://localhost:5000/api`
+Review the staged file list. If it contains a secret, environment file, database dump, or other private data, unstage and remove it before committing. Then commit and push to an empty GitHub repository:
 
-The backend creates the `cars`, `users`, and `bookings` collections in the database named in `MONGODB_URI` when it connects. Collections start empty if you have not imported or added any records.
+```powershell
+git commit -m "Initial project upload"
+git branch -M main
+git remote add origin https://github.com/<your-username>/<your-repository>.git
+git push -u origin main
+```
 
-## First admin account
-
-If `ADMIN_EMAIL` and `ADMIN_PASSWORD` are set in `backend/.env`, the backend creates or updates the admin account whenever it starts. The admin name is set with `ADMIN_NAME`. Admins can add cars from the dashboard; those car records are saved in the `cars` collection. User records are stored in the `users` collection with their names, emails, roles and timestamps. Passwords are hashed and are not returned by the API.
-
-Passwords are stored using Node.js built-in scrypt hashing. Accounts created with the former bcrypt implementation cannot be authenticated by this version; remove those user records and register again.
-
-## Features
-
-- Home page with hero banner, popular cars and about section (smooth scroll)
-- Car catalog with search, category, fuel and price filters
-- Car details page
-- Booking form with validation, price preview and confirmation popup
-- Sign up / login (JWT) and My Bookings page
-- Admin dashboard: add / edit / delete cars, view and update all bookings
-- Dark / light mode (saved in the browser)
-- Frontend loads cars from MongoDB through the API and shows an error if it cannot connect
-
-## API endpoints
-
-| Method | URL | Access |
-| --- | --- | --- |
-| POST | /api/auth/register | Public |
-| POST | /api/auth/login | Public |
-| GET | /api/cars | Public (optional: search, category, fuelType, maxPrice) |
-| GET | /api/cars/:id | Public |
-| POST | /api/cars | Admin |
-| PUT | /api/cars/:id | Admin |
-| DELETE | /api/cars/:id | Admin |
-| POST | /api/bookings | Logged in |
-| GET | /api/bookings/my | Logged in |
-| GET | /api/bookings | Admin |
-| PUT | /api/bookings/:id/status | Admin |
+If Git has already been initialized, do not run `git init` or add a second `origin`; check the existing repository and remote first. If a secret was ever committed, removing the file in a later commit is not enough—rotate the credential and remove it from Git history.

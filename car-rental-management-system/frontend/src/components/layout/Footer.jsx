@@ -18,9 +18,8 @@ function Footer() {
         </div>
         <div>
           <h3 className="mb-2 font-bold text-white">Contact</h3>
-          <p className="text-sm">Email: support@driveeasy.com</p>
-          <p className="text-sm">Phone: 9876543210</p>
-          <p className="text-sm">Facebook | Instagram | Twitter</p>
+          <p className="text-sm">Email: kaushalfumakiya9@gmail.com</p>
+          <p className="text-sm">Phone: 9327229447</p>
         </div>
       </div>
       <p className="border-t border-gray-700 py-3 text-center text-xs">
