@@ -152,7 +152,11 @@ npm install
 npm run dev
 ```
 
-The frontend runs at the address printed by Vite, normally `http://localhost:5173`. `VITE_API_URL` defaults to `http://localhost:5000/api`; change it in `frontend/.env` only if the backend API is at another address.
+The frontend runs at the address printed by Vite, normally `http://localhost:5173`. During local development, `VITE_API_URL` defaults to `http://localhost:5000/api`; change it in `frontend/.env` only if the backend API is at another address.
+
+### Deploy the frontend
+
+The frontend must use a publicly reachable backend API. Deploy the backend separately and configure `VITE_API_URL` in the frontend host's build environment to the backend's public API base URL, ending in `/api` (for example, `https://your-backend.example.com/api`). On Netlify, add this under **Site configuration → Environment variables**, then trigger a new deploy. Do not set it to `localhost` or `127.0.0.1`: those addresses refer to each visitor's device and can cause a browser local-network permission prompt. If `VITE_API_URL` is not set in a production build, requests use the same-site `/api` path, which requires the host to proxy that path to the backend.
 
 To create a production frontend build:
 
